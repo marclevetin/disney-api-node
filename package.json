@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "inquirer": "^5.1.0",
-    "themeparks": "^4.6.6"
+    "themeparks": "^4.6.6",
+    "weather-js": "^2.0.0"
   }
 }

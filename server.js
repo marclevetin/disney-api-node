@@ -1,6 +1,7 @@
 // include the Themeparks library
-var Themeparks = require("themeparks");
 var inquirer = require('inquirer');
+var Themeparks = require("themeparks");
+var weather = require("weather-js");
 
 // // list all the parks supported by the library
 // for (var park in Themeparks.Parks) {
@@ -44,35 +45,56 @@ inquirer.prompt([
   {
     type: 'list',
     name: 'themepark',
-    message: 'Choose a theme park',
+    message: 'Where are you heading?',
     choices: [
       'Magic Kingdom',
       'Epcot',
       'Hollywood Studios',
       'Animal Kingdom'
     ]
+  },
+  {
+      type: 'list',
+      name: 'function',
+      message: 'Have fun!  What can we help with?',
+      choices: [
+        'Weather report',
+        'Ride wait times'
+      ]
   }
 ]).then(answers => {
-  var choice = '';
-  switch (answers.themepark) {
-    case 'Magic Kingdom':
-      choice = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
+  switch (answers.function) {
+    case 'Ride wait times':
+      var themepark = returnPark(answers.themepark)
+      getWaitTimes(themepark)
       break;
-    case 'Epcot':
-      choice = new Themeparks.Parks.WaltDisneyWorldEpcot();
-      break;
-    case 'Hollywood Studios':
-      choice = new Themeparks.Parks.WaltDisneyWorldHollywoodStudios();
-      break;
-    case 'Animal Kingdom':
-      choice = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
+    case 'Weather report':
+      getWeather('Orlando, FL')
       break;
   }
-
-  getWaitTimes(choice)
 })
 
+function returnPark(themepark){
+  var result = '';
+  switch (themepark) {
+    case 'Magic Kingdom':
+      result = new Themeparks.Parks.WaltDisneyWorldMagicKingdom();
+      break;
+    case 'Epcot':
+      result = new Themeparks.Parks.WaltDisneyWorldEpcot();
+      break;
+    case 'Hollywood Studios':
+      result = new Themeparks.Parks.WaltDisneyWorldHollywoodStudios();
+      break;
+    case 'Animal Kingdom':
+      result = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
+      break;
+  }
+  return result;
+}
+
 function getWaitTimes(choice) {
+  // This function calls the Themeparks DisneyAPI for wait times.
   choice.GetWaitTimes().then(function(rides) {
       // print each wait time
       for(var i=0, ride; ride=rides[i++];) {
@@ -81,6 +103,19 @@ function getWaitTimes(choice) {
   }, console.error);
 }
 
+function getWeather(location) {
+  // This function calls the Weather-JS module.
+  // For now, the location will always be Orlando, added when the function is called.
+  weather.find({ search: location, degreeType: "F" }, function(err, result) {
+    if (err) {
+      console.log(err);
+    }
+    console.log('Weather report for ' + result[0].location.name +':');
+    console.log('Current temperature: ' + result[0].current.temperature + '(F).  It\'s ' + result[0].current.skytext.toLowerCase() + '.');
+    console.log('Tomorrow\'s high temperature: ' + result[0].forecast[2].high + '(F).  It\'ll be ' + result[0].forecast[2].skytextday.toLowerCase() + '.');
+
+  });
+}
 
 
 // access wait times by Promise
