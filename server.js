@@ -68,14 +68,18 @@ inquirer.prompt([
       choice = new Themeparks.Parks.WaltDisneyWorldAnimalKingdom();
       break;
   }
+
+  getWaitTimes(choice)
+})
+
+function getWaitTimes(choice) {
   choice.GetWaitTimes().then(function(rides) {
       // print each wait time
       for(var i=0, ride; ride=rides[i++];) {
           console.log(ride.name + ": " + ride.waitTime + " minutes wait");
       }
   }, console.error);
-})
-
+}
 
 
 
