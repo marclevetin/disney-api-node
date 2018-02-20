@@ -7,5 +7,6 @@ Just a fun little exercise to try out a few javascript libraries and APIs.
 
 ## To get started
 1.  Clone the app and navigate to the folder.
-2.  In a terminal, type `node server`.
-3.  Follow the prompts.
+2.  `npm install`
+3.  In a terminal, type `node server`.
+4.  Follow the prompts.
